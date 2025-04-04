@@ -1,27 +1,39 @@
+import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
-export async function PATCH(req: Request, context: { params: { id: string } }) {
-  const { params } = context; // Desestructuras params de context
-  const data = await req.json();
-  
-  const updated = await prisma.class.update({
-    where: { id: Number(params.id) },
-    data,
-  });
+export async function PATCH(req: Request) {
+  try {
+    const data = await req.json(); // Obtén el cuerpo de la solicitud
 
-  return new Response(JSON.stringify(updated));
+    const { id, ...updateData } = data.params; // Desestructuramos `id` y los datos a actualizar
+    
+    const updated = await prisma.class.update({
+      where: { id: Number(id) }, // Convertimos `id` al tipo esperado (número)
+      data: updateData, // Aplicamos la actualización con los datos recibidos
+    });
+
+    return NextResponse.json({ message: `Registro con ID: ${id} actualizado exitosamente.`, updated });
+  } catch (error) {
+    console.error('Error al actualizar:', error);
+    return NextResponse.json({ error: 'No se pudo actualizar el registro.' }, { status: 500 });
+  }
 }
 
+export async function DELETE(req: Request) {
+  try {
+    const data = await req.json();
 
-export async function DELETE(
-  req: Request,
-  context: { params: { id: string } } // Específico para Next.js App Router
-) {
-  const { id } = context.params; // Obtén `id` del contexto
-  await prisma.class.delete({
-    where: { id: Number(id) },
-  });
+    const {id} = data.params // Desestructuramos el parámetro dinámico `id`
+    
+    await prisma.class.delete({
+      where: { id: Number(id) }, // Asegúrate de convertir `id` al tipo esperado (número)
+    });
 
-  return new Response(null, { status: 204 });
+    return NextResponse.json({ message: `Registro con ID: ${id} eliminado exitosamente.` }, { status: 200 });
+  } catch (error) {
+    console.error('Error al eliminar:', error);
+    return NextResponse.json({ error: 'No se pudo eliminar el registro.' }, { status: 500 });
+  }
 }
+
 
