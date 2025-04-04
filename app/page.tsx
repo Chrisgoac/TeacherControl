@@ -1,3 +1,5 @@
+"use client"
+
 import React, { useEffect, useState } from 'react';
 import StudentForm from '@/components/StudentForm';
 import CalendarView from '@/components/CalendarView';
