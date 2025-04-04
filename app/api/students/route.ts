@@ -10,3 +10,8 @@ export async function POST(req: Request) {
 
   return NextResponse.json(student);
 }
+
+export async function GET(req: Request) {
+  const students = await prisma.student.findMany();
+  return new Response(JSON.stringify(students));
+}
