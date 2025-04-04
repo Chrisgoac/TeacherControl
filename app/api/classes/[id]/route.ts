@@ -15,9 +15,9 @@ export async function PATCH(req: Request, context: { params: { id: string } }) {
 
 export async function DELETE(
   req: Request,
-  { params }: { params: Record<string, string> } // Ajusta el tipo correctamente
+  context: { params: { id: string } } // Específico para Next.js App Router
 ) {
-  const { id } = params; // Obtén `id` de forma correcta desde `params`
+  const { id } = context.params; // Obtén `id` del contexto
   await prisma.class.delete({
     where: { id: Number(id) },
   });
