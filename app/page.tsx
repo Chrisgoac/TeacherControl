@@ -6,6 +6,7 @@ import React from 'react';
 
 export default async function HomePage() {
   const students = await prisma.student.findMany();
+  console.log(students)
 
   return (
     <div className="p-8 space-y-8">
