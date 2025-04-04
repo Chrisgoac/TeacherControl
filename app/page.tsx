@@ -1,12 +1,20 @@
+import React, { useEffect, useState } from 'react';
 import StudentForm from '@/components/StudentForm';
 import CalendarView from '@/components/CalendarView';
 import ClassForm from '@/components/ClassForm';
-import { prisma } from '@/lib/prisma';
-import React from 'react';
 
-export default async function HomePage() {
-  const students = await prisma.student.findMany();
-  console.log(students)
+export default function HomePage() {
+  const [students, setStudents] = useState([]);
+
+  const fetchStudents = async () => {
+    const response = await fetch('/api/students');
+    const data = await response.json();
+    setStudents(data);
+  };
+
+  useEffect(() => {
+    fetchStudents();
+  }, []);
 
   return (
     <div className="p-8 space-y-8">
@@ -14,7 +22,7 @@ export default async function HomePage() {
 
       <div>
         <h2 className="text-xl font-semibold">Añadir Alumno</h2>
-        <StudentForm />
+        <StudentForm onStudentAdded={fetchStudents} />
       </div>
 
       <div>
@@ -29,6 +37,3 @@ export default async function HomePage() {
     </div>
   );
 }
-
-
-

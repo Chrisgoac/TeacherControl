@@ -2,7 +2,11 @@
 
 import React, { useState } from 'react';
 
-export default function StudentForm() {
+interface StudentFormProps {
+  onStudentAdded?: () => Promise<void>; // Prop opcional para manejar actualizaciones en el padre
+}
+
+export default function StudentForm({ onStudentAdded }: StudentFormProps) {
   const [name, setName] = useState('');
   const [course, setCourse] = useState('');
   const [pricePerHour, setPricePerHour] = useState('');
@@ -38,6 +42,11 @@ export default function StudentForm() {
       setName('');
       setCourse('');
       setPricePerHour('');
+
+      // Notificar al padre que se añadió un estudiante
+      if (onStudentAdded) {
+        await onStudentAdded();
+      }
     } catch (error: any) {
       setError(error.message || 'Error desconocido');
     } finally {
