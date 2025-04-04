@@ -13,12 +13,15 @@ export async function PATCH(req: Request, context: { params: { id: string } }) {
 }
 
 
-export async function DELETE(req: Request, context: { params: { id: string } }) {
-  const { params } = context; // Desestructuras params de context
-
+export async function DELETE(
+  req: Request,
+  { params }: { params: Record<string, string> } // Ajusta el tipo correctamente
+) {
+  const { id } = params; // Obtén `id` de forma correcta desde `params`
   await prisma.class.delete({
-    where: { id: Number(params.id) },
+    where: { id: Number(id) },
   });
 
   return new Response(null, { status: 204 });
 }
+
